@@ -17,11 +17,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    /*public void display(double number) {
-        TextView resultTextView = (TextView) findViewById(R.id.result_field);
-        resultTextView.setText(""+number);
-    }*/
-
     public void displayString(String numberString) {
         TextView resultTextView = (TextView) findViewById(R.id.result_field);
         resultTextView.setText(numberString);
@@ -176,19 +171,13 @@ public class MainActivity extends AppCompatActivity {
 
     //Список операторов (+, -, *, /, открывающая скобка)
     List<Character> operations = new ArrayList<>();
+    //Список для чисел, участвующих в выражении
     List<Double> numbers = new ArrayList<>();
     //Список для постфиксной записи переданного выражения
     List<String> operationsAndNumbers = new ArrayList<>();
 
-    //В соответствии с приоритетом оператора (* и / над + и -)
-    //В цикле, пока список опреаторов не пуст:
-    //Взять последний добавленный в список операторов символ
-    //Если символ (, вернуть ( в список операторов
-    //Если другой символ (*, /, + или -), то
-    //Если его важность меньше важности переданного символа, вернуть в список операторов и прервать цикл
-    //Если его важность больше либо равна важности переданного символа, добавить символ в список с постфиксной записью выражения
-    //и продолжить цикл
-    //После цикла добавить переданный символ в список операторов
+    //Добавление нового оператора в список операторов в соответствии с его приоритетом
+    //при вычислении значения выражения
     private void gotOper(char opThis, int prec1) {
         while (!operations.isEmpty()) {
             char opTop = operations.remove(operations.size()-1);
@@ -208,17 +197,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     operationsAndNumbers.add("" + opTop);
-                } //добавить opTop в строку с операндами (числами) - в numbers, но там элементы другого типа
+                }
 
             }
         }
         operations.add(opThis);
     }
 
-    //В цикле, пока список опреаторов не пуст:
-    //Взять последний добавленный в список операторов символ
-    //Если символ ( , то прервать цикл
-    //Если нет, то добавить символ в постфиксную запись выражения
+    //Добавление операторов в список для постфиксной записи выражения,
+    //если в нем присутствует закрывающая скобка
     private void gotParen(char ch) {
         while (!operations.isEmpty()) {
             char chx = operations.remove(operations.size()-1);
@@ -250,15 +237,6 @@ public class MainActivity extends AppCompatActivity {
                     number.append(ch);
                     if (i == stringResult.length()-1) operationsAndNumbers.add(number.toString());
                     break;
-                /*case '%':
-                    double percent = Double.parseDouble(number.toString())/100;
-                    number = new StringBuilder();
-                    number.append(percent);
-                    if (i == stringResult.length()-1) {
-                        operationsAndNumbers.add(number.toString());
-                        continue;
-                    }
-                    break;*/
                 case '.':
                     number.append('.');
                     break;                                                  // + или -
@@ -302,10 +280,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     gotParen(ch);
                     break;
-                /*default:
-                    //numbers.add(Double.parseDouble(""+ch));
-                    operationsAndNumbers.add(""+ch);                // Остается операнд - // Записать в выходную строку
-                    break;*/
             }
         }
 
@@ -316,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
         //В operationsAndNumbers содержится постфиксная последовательность символов для вычисления выражения
     }
 
-    //Вычисления значения выражения из чисел и операторов в постфиксной записи из operationsAndNumbers
+    //Вычисление значения выражения из чисел и операторов в постфиксной записи из operationsAndNumbers
     private void resultCalculate() {
         for (int i = 0; i < operationsAndNumbers.size(); i++) {
             double firstNumber = 0;
