@@ -85,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void undo(View view) {
-        stringResult = stringResult.substring(0, stringResult.length()-1);
+        if (!stringResult.equals(""))
+            stringResult = stringResult.substring(0, stringResult.length()-1);
         displayString(stringResult);
     }
 
